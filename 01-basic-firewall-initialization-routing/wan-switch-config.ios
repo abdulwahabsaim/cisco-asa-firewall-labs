@@ -1,0 +1,29 @@
+! Cisco IOS Software, Linux - L2 Enterprise Software (I86BI_LINUX-ADVENTERPRISEK9-15.2D)
+! Device: WAN-Switch (Layer 2 Interconnect Bridge between ASA Outside and WAN-Router)
+!
+version 15.2
+hostname WAN-Switch
+!
+no ip domain-lookup
+!
+interface Ethernet0/0
+ description Downlink_to_ASA_Ethernet0_Outside
+ switchport mode access
+ switchport access vlan 1
+ no shutdown
+!
+interface Ethernet0/1
+ description Uplink_to_WAN-Router_Ethernet0/0
+ switchport mode access
+ switchport access vlan 1
+ no shutdown
+!
+interface Ethernet0/2
+ description Unused_Physical_Interface
+ shutdown
+!
+interface Ethernet0/3
+ description Unused_Physical_Interface
+ shutdown
+!
+end
