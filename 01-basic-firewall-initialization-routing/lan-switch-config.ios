@@ -1,0 +1,31 @@
+! Cisco IOS Software, Linux - L2 Enterprise Software (I86BI_LINUX-ADVENTERPRISEK9-15.2D)
+! Device: LAN-Switch (Layer 2 Access Switch for Inside Enterprise Workstations)
+!
+version 15.2
+hostname LAN-Switch
+!
+no ip domain-lookup
+!
+interface Ethernet0/0
+ description Uplink_to_ASA_Ethernet1_Inside
+ switchport mode access
+ switchport access vlan 1
+ no shutdown
+!
+interface Ethernet0/1
+ description Access_to_TestPC1
+ switchport mode access
+ switchport access vlan 1
+ no shutdown
+!
+interface Ethernet0/2
+ description Access_to_TestPC2
+ switchport mode access
+ switchport access vlan 1
+ no shutdown
+!
+interface Ethernet0/3
+ description Unused_Physical_Interface
+ shutdown
+!
+end
