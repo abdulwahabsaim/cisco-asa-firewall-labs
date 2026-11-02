@@ -1,0 +1,12 @@
+# OS & Editor artifacts
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+*~
+
+# LinkedIn publishing package (strictly isolated locally, never pushed to GitHub)
+linkedin/
+**/linkedin/
+linkedin.txt
+**/linkedin.txt
