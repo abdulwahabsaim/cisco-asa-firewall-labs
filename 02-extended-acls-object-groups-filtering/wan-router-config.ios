@@ -1,0 +1,42 @@
+! Cisco IOS Software, Linux - L3 Enterprise Software (I86BI_LINUX-ADVENTERPRISEK9-M)
+! Device: WAN-Router (Upstream Enterprise Transit Provider / Simulated Branch)
+!
+version 15.5
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname WAN-Router
+!
+interface Loopback0
+ description Simulated_Remote_Branch_Prefix_22
+ ip address 22.2.2.2 255.255.255.0
+ no shutdown
+!
+interface Loopback1
+ description Simulated_Remote_Branch_Prefix_33
+ ip address 33.3.3.3 255.255.255.0
+ no shutdown
+!
+interface Ethernet0/0
+ description Downlink_to_WAN-Switch_facing_ASA_Outside
+ ip address 203.10.1.1 255.255.255.0
+ no shutdown
+!
+! --- Static Return Routes ---
+ip route 10.1.1.0 255.255.255.0 203.10.1.2
+ip route 10.10.0.0 255.255.0.0 203.10.1.2
+!
+! --- Dynamic Routing ---
+router ospf 1
+ network 203.10.1.0 0.0.0.255 area 0
+ network 22.2.2.0 0.0.0.255 area 0
+ network 33.3.3.0 0.0.0.255 area 0
+!
+router eigrp 1
+ network 203.10.1.0 0.0.0.255
+ network 22.2.2.0 0.0.0.255
+ network 33.3.3.0 0.0.0.255
+ no auto-summary
+!
+end
