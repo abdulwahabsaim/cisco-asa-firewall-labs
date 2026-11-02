@@ -1,0 +1,98 @@
+! Cisco ASA 5520 Adaptive Security Appliance
+! ASA Software Version 9.1(5)
+! Device: ASA (Enterprise Security Gateway)
+! Lab 02: Access Control Lists, Object Groups, DMZ 802.1Q Sub-Interfaces
+!
+hostname ASA
+!
+names
+!
+! --- Physical Parent Interfaces ---
+interface Ethernet0
+ description WAN_Uplink_to_WAN-Switch
+ nameif Outside
+ security-level 0
+ ip address 203.10.1.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet1
+ description LAN_Downlink_to_LAN-Switch
+ nameif Inside
+ security-level 100
+ ip address 10.1.1.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet2
+ description Trunk_Uplink_to_DMZ-Switch
+ no nameif
+ no security-level
+ no ip address
+ no shutdown
+!
+! --- 802.1Q Logical Sub-Interfaces (DMZ Multi-Tier Services) ---
+interface Ethernet2.10
+ description DMZ_Web_Tier_1_VLAN_10
+ vlan 10
+ nameif Web1
+ security-level 50
+ ip address 10.10.1.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet2.20
+ description DMZ_Web_Tier_2_VLAN_20
+ vlan 20
+ nameif Web2
+ security-level 50
+ ip address 10.10.2.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet2.30
+ description DMZ_Web_Tier_3_VLAN_30
+ vlan 30
+ nameif Web3
+ security-level 50
+ ip address 10.10.3.2 255.255.255.0
+ no shutdown
+!
+! Allow intra-DMZ communication between interfaces sharing Security Level 50
+same-security-traffic permit inter-interface
+!
+! --- Object-Group Containers (Rule Consolidation) ---
+object-group network HOSTS
+ description Internal_Engineering_Workstations
+ network-object host 192.168.1.1
+ network-object host 192.168.1.2
+ network-object host 192.168.1.3
+ network-object host 192.168.1.4
+!
+object-group network SERVERS
+ description Target_Enterprise_Application_Servers
+ network-object host 10.1.1.1
+ network-object host 10.1.1.2
+ network-object host 10.1.1.3
+ network-object host 10.1.1.4
+!
+object-group service PORTS tcp
+ description Permitted_Management_and_Web_Services
+ port-object eq 23
+ port-object eq 80
+!
+! --- Access Control Lists ---
+! Consolidated rule expands internally into 32 discrete ACEs (4 hosts x 4 servers x 2 ports)
+access-list INSIDE_IN extended permit tcp object-group HOSTS object-group SERVERS object-group PORTS
+access-list INSIDE_IN extended permit udp any any
+access-group INSIDE_IN in interface Inside
+!
+! Inbound transit access-list on Outside interface
+access-list 101 extended permit ip any any
+access-group 101 in interface Outside
+!
+! --- Edge Routing ---
+router ospf 1
+ network 203.10.1.0 255.255.255.0 area 0
+ log-adj-changes
+!
+router eigrp 1
+ network 203.10.1.0 255.255.255.0
+!
+end
