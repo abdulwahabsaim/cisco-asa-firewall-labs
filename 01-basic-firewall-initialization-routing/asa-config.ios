@@ -1,0 +1,51 @@
+! Cisco ASA 5520 Adaptive Security Appliance
+! ASA Software Version 9.1(5)
+! Device: ASA (Enterprise Security Gateway)
+!
+hostname ASA
+!
+names
+!
+interface Ethernet0
+ description WAN_Uplink_to_WAN-Switch
+ nameif Outside
+ security-level 0
+ ip address 203.10.1.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet1
+ description LAN_Downlink_to_LAN-Switch
+ nameif Inside
+ security-level 100
+ ip address 10.1.1.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet2
+ description Unused_Physical_Interface
+ shutdown
+ no nameif
+ no ip address
+!
+interface Ethernet3
+ description Unused_Physical_Interface
+ shutdown
+ no nameif
+ no ip address
+!
+! --- Security Policy: Inbound Access Control List ---
+! Permits inbound return transit traffic entering the untrusted Outside zone (Security Level 0 -> 100)
+access-list 101 extended permit ip any any
+access-group 101 in interface Outside
+!
+! --- Dynamic Routing: OSPF Area 0 ---
+! Note: Cisco ASA requires standard subnet masks (255.255.255.0), unlike IOS wildcard masks
+router ospf 1
+ network 203.10.1.0 255.255.255.0 area 0
+ log-adj-changes
+!
+! --- Dynamic Routing: EIGRP Autonomous System 1 ---
+! EIGRP AD (90) arbitrates over OSPF AD (110) in routing table RIB population
+router eigrp 1
+ network 203.10.1.0 255.255.255.0
+!
+end
