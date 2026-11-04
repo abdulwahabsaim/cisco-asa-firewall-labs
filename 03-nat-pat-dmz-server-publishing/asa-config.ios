@@ -1,0 +1,104 @@
+! Cisco ASA 5520 Adaptive Security Appliance
+! ASA Software Version 9.1(5)
+! Device: ASA (Enterprise Security Gateway)
+! Lab 03: NAT, PAT (Overload), DMZ Web Server Publishing, Post-NAT ACLs
+!
+hostname ASA
+!
+names
+!
+! --- Physical Parent Interfaces ---
+interface Ethernet0
+ description WAN_Uplink_to_WAN-Switch
+ nameif Outside
+ security-level 0
+ ip address 203.10.1.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet1
+ description LAN_Downlink_to_LAN-Switch
+ nameif Inside
+ security-level 100
+ ip address 10.1.1.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet2
+ description Trunk_Uplink_to_DMZ-Switch
+ no nameif
+ no security-level
+ no ip address
+ no shutdown
+!
+! --- 802.1Q Logical Sub-Interfaces (DMZ Multi-Tier Web Farm) ---
+interface Ethernet2.10
+ description DMZ_Web_Tier_1_VLAN_10
+ vlan 10
+ nameif Web1
+ security-level 50
+ ip address 10.10.1.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet2.20
+ description DMZ_Web_Tier_2_VLAN_20
+ vlan 20
+ nameif Web2
+ security-level 50
+ ip address 10.10.2.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet2.30
+ description DMZ_Web_Tier_3_VLAN_30
+ vlan 30
+ nameif Web3
+ security-level 50
+ ip address 10.10.3.2 255.255.255.0
+ no shutdown
+!
+! Permit inter-interface communication across equal security levels (DMZ-to-DMZ)
+same-security-traffic permit inter-interface
+!
+! --- NAT & PAT Architecture ---
+! 1. Port Address Translation (PAT / NAT Overload) for Inside User Egress
+object network myInsideNetwork
+ description Inside_LAN_Workstation_Pool
+ subnet 10.1.1.0 255.255.255.0
+ nat (Inside,Outside) dynamic interface
+!
+! 2. Destination NAT (Server Publishing) for DMZ Web Tier (1:1 VIP Mappings)
+object network Web1
+ description Internal_Production_WebServer_1
+ host 10.10.1.1
+ nat (Web1,Outside) static 203.10.1.15
+!
+object network Web2
+ description Internal_Production_WebServer_2
+ host 10.10.2.1
+ nat (Web2,Outside) static 203.10.1.20
+!
+object network Web3
+ description Internal_Production_WebServer_3
+ host 10.10.3.1
+ nat (Web3,Outside) static 203.10.1.25
+!
+! --- Object Grouping ---
+object-group network WebServers
+ description Target_DMZ_Web_Farm_Endpoints
+ network-object host 10.10.1.1
+ network-object host 10.10.2.1
+ network-object host 10.10.3.1
+!
+! --- Post-NAT Inbound Access Control List ---
+! ASA 9.x Order of Operations: Un-NAT occurs prior to ACL evaluation.
+! Outside interface ACL matches the REAL private IP addresses of the servers.
+access-list WebServers extended permit tcp any object-group WebServers eq www
+access-group WebServers in interface Outside
+!
+! --- Routing Protocols ---
+router ospf 1
+ network 203.10.1.2 255.255.255.255 area 0
+ log-adj-changes
+!
+router eigrp 1
+ network 203.10.1.2 255.255.255.255
+!
+end
