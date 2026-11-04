@@ -1,0 +1,31 @@
+! Cisco IOS Software, Linux - Layer 2 Switch (IOL)
+! Device: WAN-Switch (External Perimeter Layer 2 Distribution)
+! Lab 03: NAT, PAT (Overload), DMZ Web Server Publishing, Post-NAT ACLs
+!
+hostname WAN-Switch
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+! Port Assignments:
+! Ethernet0/0 -> ASA Ethernet0 (Outside)
+! Ethernet0/1 -> WAN-Router Ethernet0/0 (Default Gateway)
+! Ethernet0/2 -> WAN-TestPC eth0 (Simulated Internet Client)
+!
+interface Ethernet0/0
+ description Link_to_ASA_Outside_Interface
+ switchport mode access
+ no shutdown
+!
+interface Ethernet0/1
+ description Link_to_WAN-Router_Ethernet0/0
+ switchport mode access
+ no shutdown
+!
+interface Ethernet0/2
+ description Link_to_WAN-TestPC_Client
+ switchport mode access
+ spanning-tree portfast edge
+ no shutdown
+!
+end
