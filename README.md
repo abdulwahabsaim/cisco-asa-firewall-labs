@@ -34,7 +34,7 @@ Unlike traditional packet-filtering routers, the Cisco ASA operates as a **state
 | :--- | :--- | :--- | :--- | :--- | :---: |
 | [**`01-basic-firewall-initialization-routing`**](./01-basic-firewall-initialization-routing) | Perimeter Firewall Deployment | 4 Pillars of Init, Security Levels (0 vs 100), Inbound ACL, OSPF Area 0, EIGRP AS 1 | Cisco ASA 5520, Cisco IOL Router, 2x IOL Switches | EIGRP AD (90) over OSPF AD (110) arbitration, ICMP uninspected drop telemetry | ✅ **Verified** |
 | [**`02-extended-acls-object-groups-filtering`**](./02-extended-acls-object-groups-filtering) | DMZ & Multi-Tier Service Filtering | Extended Access Lists, Object Groups (Network, Service), 802.1Q Sub-Interfaces | Cisco ASA 5520, DMZ Switch, 3x Web Servers | 32-ACE rule expansion, Intra-DMZ traffic traversal, 5-tuple state tracking | ✅ **Verified** |
-| **`03-network-address-translation-static-dynamic-pat`** | Enterprise Edge Translation | Twice NAT, Dynamic PAT Overload, Static One-to-One Server Mapping | Cisco ASA 5520, Edge Transit Routers | `show xlate`, `show nat`, real-to-mapped address translation | 📅 *Roadmap* |
+| [**`03-nat-pat-dmz-server-publishing`**](./03-nat-pat-dmz-server-publishing) | NAT, PAT & DMZ Server Publishing | Static NAT (1:1), Dynamic Pool Exhaustion, PAT Overload, DMZ Destination NAT, Post-NAT ACLs | Cisco ASA 5520, DMZ Switch, 3x Web Servers, WAN Router & TestPC | `show xlate`, `show nat`, `show access-list`, Firefox HTTP proof | ✅ **Verified** |
 | **`04-modular-policy-framework-deep-inspection`** | Advanced Application Inspection | Modular Policy Framework (MPF), Class Maps, Policy Maps, ICMP & HTTP State Inspection | Cisco ASA 5520, Multi-tier Clients | Inspection engine metrics, Drop counters for protocol violations | 📅 *Roadmap* |
 | **`05-site-to-site-ipsec-vpn-tunneling`** | Encrypted Site Interconnect | IKEv1/IKEv2 Phase 1 Policies, IPsec Phase 2 Transform Sets, Crypto Maps, Non-NAT ACLs | 2x Cisco ASA 5520, Transit WAN Cloud | `show crypto isakmp sa`, `show crypto ipsec sa`, ESP encapsulation | 📅 *Roadmap* |
 | **`06-remote-access-ssl-anyconnect-vpn`** | Enterprise Teleworker Access | SSL VPN, Cisco AnyConnect Client Profiles, Split-Tunneling, Local AAA Identity | Cisco ASA 5520, Windows/Linux Endpoints | `show vpn-sessiondb anyconnect`, Assigned virtual IP address pool | 📅 *Roadmap* |
@@ -97,11 +97,21 @@ cisco-asa-firewall-labs/
 │   ├── wan-router-config.ios                          <-- Upstream Transit Router Configuration
 │   ├── wan-switch-config.ios                          <-- Layer 2 WAN Access Switch Configuration
 │   └── lan-switch-config.ios                          <-- Layer 2 LAN Access Switch Configuration
-└── 02-extended-acls-object-groups-filtering/
-    ├── README.md                                      <-- Lab 02 Comprehensive Documentation
-    ├── topology.png                                   <-- Architecture and VLAN Sub-Interface Diagram
-    ├── cisco-asa-extended-acls-object-groups.unl      <-- EVE-NG Lab Simulation File
-    ├── asa-config.ios                                 <-- Cisco ASA 5520 Sub-Interfaces & Object Groups
+├── 02-extended-acls-object-groups-filtering/
+│   ├── README.md                                      <-- Lab 02 Comprehensive Documentation
+│   ├── topology.png                                   <-- Architecture and VLAN Sub-Interface Diagram
+│   ├── cisco-asa-extended-acls-object-groups.unl      <-- EVE-NG Lab Simulation File
+│   ├── asa-config.ios                                 <-- Cisco ASA 5520 Sub-Interfaces & Object Groups
+│   ├── dmz-switch-config.ios                          <-- DMZ Switch Dot1Q Trunk & Access Configuration
+│   ├── wan-router-config.ios                          <-- Upstream Transit Router Configuration
+│   ├── wan-switch-config.ios                          <-- Layer 2 WAN Access Switch Configuration
+│   └── lan-switch-config.ios                          <-- Layer 2 LAN Access Switch Configuration
+└── 03-nat-pat-dmz-server-publishing/
+    ├── README.md                                      <-- Lab 03 Comprehensive Documentation
+    ├── topology.png                                   <-- EVE-NG NAT & DMZ Server Publishing Topology
+    ├── proof.png                                      <-- Firefox HTTP Verification Capture on WAN-TestPC
+    ├── cisco-asa-nat-pat-dmz-publishing.unl           <-- EVE-NG Lab Simulation File
+    ├── asa-config.ios                                 <-- Cisco ASA 5520 NAT, PAT & Post-NAT ACL Config
     ├── dmz-switch-config.ios                          <-- DMZ Switch Dot1Q Trunk & Access Configuration
     ├── wan-router-config.ios                          <-- Upstream Transit Router Configuration
     ├── wan-switch-config.ios                          <-- Layer 2 WAN Access Switch Configuration
