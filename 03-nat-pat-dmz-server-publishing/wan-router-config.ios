@@ -1,0 +1,39 @@
+! Cisco IOS Software, Linux - Layer 3 Router (IOL)
+! Device: WAN-Router (Simulated External ISP / WAN Gateway)
+! Lab 03: NAT, PAT (Overload), DMZ Web Server Publishing, Post-NAT ACLs
+!
+hostname WAN-Router
+!
+no ip domain lookup
+ip cef
+!
+! --- Simulated Remote Branch / Internet Prefixes ---
+interface Loopback0
+ description Simulated_Remote_Branch_Prefix_22
+ ip address 22.2.2.2 255.255.255.0
+!
+interface Loopback1
+ description Simulated_Remote_Branch_Prefix_33
+ ip address 33.3.3.3 255.255.255.0
+!
+! --- Transit Link to WAN Distribution ---
+interface Ethernet0/0
+ description Downlink_to_WAN-Switch_facing_ASA_Outside
+ ip address 203.10.1.1 255.255.255.0
+ no shutdown
+!
+! --- Dynamic Routing Protocols ---
+router ospf 1
+ network 22.2.2.0 0.0.0.255 area 0
+ network 33.3.3.0 0.0.0.255 area 0
+ network 203.10.1.0 0.0.0.255 area 0
+!
+router eigrp 1
+ network 22.2.2.0 0.0.0.255
+ network 33.3.3.0 0.0.0.255
+ network 203.10.1.0 0.0.0.255
+!
+! --- Static Return Route for Untranslated Baseline Verification ---
+ip route 10.1.1.0 255.255.255.0 203.10.1.2
+!
+end
