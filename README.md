@@ -6,7 +6,7 @@
 [![Platform](https://img.shields.io/badge/Platform-Cisco_ASA_5520_|_FTD-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white)](https://cisco.com)
 [![Environment](https://img.shields.io/badge/Environment-EVE--NG_Community-brightgreen?style=for-the-badge&logo=linux&logoColor=white)](https://eve-ng.net)
 [![Certification](https://img.shields.io/badge/Credential-CCNA_200--301_Certified-orange?style=for-the-badge&logo=cisco&logoColor=white)](https://cp.certmetrics.com/cisco/en/public/verify/credential/CSCO15110282)
-[![Status](https://img.shields.io/badge/Portfolio_Status-Labs_01_&_02_Verified-success?style=for-the-badge)]()
+[![Status](https://img.shields.io/badge/Portfolio_Status-Labs_01,_02_&_03_Verified-success?style=for-the-badge)]()
 
 <p align="center">
   <b>A comprehensive, production-standard enterprise security engineering portfolio covering Cisco ASA 5520 Adaptive Security Appliances, Cisco Firepower Threat Defense (FTD), Stateful Packet Inspection, Security Zone Hierarchies (0-100), Modular Policy Framework (MPF), Network Address Translation (NAT/PAT), Site-to-Site IPsec VPNs, and Edge Dynamic Routing.</b>
