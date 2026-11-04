@@ -1,0 +1,48 @@
+! Cisco IOS Software, Linux - Layer 2 Switch (IOL)
+! Device: DMZ-Switch (DMZ Distribution Switch)
+! Lab 03: NAT, PAT (Overload), DMZ Web Server Publishing, Post-NAT ACLs
+!
+hostname DMZ-switch
+!
+vlan 10
+ name Web_Tier_1
+!
+vlan 20
+ name Web_Tier_2
+!
+vlan 30
+ name Web_Tier_3
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+! --- Trunk Uplink to Cisco ASA ---
+interface Ethernet0/0
+ description Trunk_Uplink_to_ASA_Ethernet2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ no shutdown
+!
+! --- Web Server Access Downlinks ---
+interface Ethernet0/1
+ description Access_to_Web1_Server_VLAN_10
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast edge
+ no shutdown
+!
+interface Ethernet0/2
+ description Access_to_Web2_Server_VLAN_20
+ switchport access vlan 20
+ switchport mode access
+ spanning-tree portfast edge
+ no shutdown
+!
+interface Ethernet0/3
+ description Access_to_Web3_Server_VLAN_30
+ switchport access vlan 30
+ switchport mode access
+ spanning-tree portfast edge
+ no shutdown
+!
+end
